@@ -14,7 +14,6 @@ import Button from '@mui/material/Button'; // <<< ADDED Import Button
 import EmailIcon from '@mui/icons-material/Email';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // <<< ADDED Import Icon
 
-
 const ProfilePage: React.FC = () => {
   // Get user details from the authentication context
   const { user } = useAuth();

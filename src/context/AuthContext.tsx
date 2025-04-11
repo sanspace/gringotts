@@ -50,7 +50,7 @@ interface User {
           const decodedUser: User = jwtDecode(token);
           setUser(decodedUser); // Store the decoded user info
           localStorage.setItem('authToken', token); // Keep token in storage
-          console.log("Decoded User Info:", decodedUser); // For debugging
+          // console.log("Decoded User Info:", decodedUser); // For debugging
         } catch (error) {
           console.error("Failed to decode token:", error);
           // Handle invalid token - clear state

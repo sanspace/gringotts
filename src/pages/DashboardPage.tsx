@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext'; // To get user info
 import { Link } from 'react-router-dom'; // Import Link for navigation
 
@@ -13,11 +13,46 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid'; // <<< Import Grid (ensure correct default import)
 
-// Optional Icon for Account Card
-// import SettingsIcon from '@mui/icons-material/Settings';
+// Icon for Card
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
+  const [backendMessage, setBackendMessage] = useState<string>('Loading message from backend...');
+
+  useEffect(() => {
+    const backendUrl = 'http://127.0.0.1:8000/'; // Your LOCAL backend URL
+
+    console.log(`Workspaceing from backend: ${backendUrl}`);
+
+    fetch(backendUrl)
+      .then(response => {
+        // Check if response is successful
+        if (!response.ok) {
+          // Log detailed error if possible
+          console.error(`HTTP error! Status: ${response.status}`, response);
+          throw new Error(`Backend responded with status: ${response.status}`);
+        }
+        // Check content type before parsing JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            return response.json();
+        } else {
+            throw new Error("Received non-JSON response from backend");
+        }
+      })
+      .then(data => {
+        console.log("Data received from backend:", data);
+        setBackendMessage(data.message || "Received data, but no 'message' field.");
+      })
+      .catch(error => {
+        // Log fetch errors (like network errors, CORS errors)
+        console.error("Error fetching data from backend:", error);
+        setBackendMessage(`Error: Could not connect or fetch from backend. ${error.message}`);
+      });
+
+  }, []);
 
   return (
     <Container maxWidth="lg"> {/* Using lg for potentially wider dashboard */}
@@ -54,6 +89,7 @@ const DashboardPage: React.FC = () => {
                   to="/profile"
                   variant="contained"
                   size="small"
+                  startIcon={<PersonOutlineIcon />}
                 >
                   View Profile
                 </Button>
@@ -80,7 +116,7 @@ const DashboardPage: React.FC = () => {
                       to="/account" // Link to the account page
                       variant="contained"
                       size="small"
-                      // Optional: startIcon={<SettingsIcon />}
+                      startIcon={<AccountBalanceWalletIcon />}
                    >
                       View Account
                    </Button>

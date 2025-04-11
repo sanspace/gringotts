@@ -27,9 +27,10 @@ import IconButton from '@mui/material/IconButton'; // Import IconButton
 
 // Icons
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import MenuIcon from '@mui/icons-material/Menu'; // Import MenuIcon
-import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerWidth = 240;
 
@@ -47,8 +48,8 @@ const App: React.FC = () => {
 
   const navItems = [
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
-    { text: 'Profile', path: '/profile', icon: <AccountCircleIcon /> },
-    { text: 'Account', path: '/account', icon: <SettingsIcon /> }, 
+    { text: 'Profile', path: '/profile', icon: <PersonOutlineIcon /> },
+    { text: 'Account', path: '/account', icon: <AccountBalanceWalletIcon /> }, 
   ];
 
   // Define Drawer content separately for clarity
@@ -117,7 +118,7 @@ const App: React.FC = () => {
           {/* Right Side Items */}
            {isLoggedIn ? (
                  <>
-                    <Button color="inherit" onClick={logout}>Logout</Button>
+                    <Button color="inherit" onClick={logout} startIcon={<LogoutIcon />}>Logout</Button>
                     <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', ml: 2, cursor: 'pointer', '&:hover': { opacity: 0.9 } }}>
                             <Typography variant="body1" color="inherit" sx={{ mr: 1.5 }}>{user?.name || 'User'}</Typography>
