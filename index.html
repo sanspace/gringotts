@@ -5,6 +5,18 @@
     <link rel="icon" type="image/svg+xml" href="/gringotts.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gringotts Banking Corp Ltd</title>
+    <script>
+      (function() {
+        // Check if we were redirected from the 404 page
+        var redirect = sessionStorage.redirect;
+        // Clear the sessionStorage key immediately
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+          // Use replaceState to update the URL in the address bar without reloading
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
