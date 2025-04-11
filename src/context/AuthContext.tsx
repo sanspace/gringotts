@@ -8,20 +8,23 @@ import React, {
     ReactNode, // Type for children prop
   } from 'react';
   import { CredentialResponse } from '@react-oauth/google'; // Import the type for the response
+  import { jwtDecode } from 'jwt-decode';
   
-  // Optional: Define a type for your user object if you decode the token
-  // interface User {
-  //   id: string;
-  //   name: string;
-  //   email: string;
-  //   // Add other relevant fields you might get from the token
-  // }
+// Define an interface for the expected user info from the token
+interface User {
+  name?: string;       // Standard OIDC claim
+  email?: string;      // Standard OIDC claim
+  picture?: string;    // Standard OIDC claim
+  given_name?: string; // First name
+  family_name?: string;// Last name
+  sub?: string;        // Subject ID (Google's unique ID for the user)
+  // Add other fields if needed based on requested scopes
+}
   
   // Define the shape of the context value
   interface AuthContextType {
     token: string | null;
-    // user: User | null; // Use if you have a User interface
-    user: object | null; // Simple object placeholder for now
+    user: User | null;
     isLoggedIn: boolean;
     login: (credentialResponse: CredentialResponse) => void;
     logout: () => void;
@@ -37,30 +40,38 @@ import React, {
   
   export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [token, setToken] = useState<string | null>(() => localStorage.getItem('authToken'));
-    // const [user, setUser] = useState<User | null>(null); // Use if you have a User interface
-    const [user, setUser] = useState<object | null>(null); // Simple object placeholder
+    const [user, setUser] = useState<User | null>(null);
   
+
     useEffect(() => {
       if (token) {
-        // **SECURITY NOTE:** (Same as before) Verify token on backend in production.
-        localStorage.setItem('authToken', token);
-        // Example: Decode token client-side (use cautiously) or fetch user data
-        // const decodedUser: User = jwtDecode(token); // Example with jwt-decode
-        // setUser(decodedUser);
-        setUser({}); // Simulate user presence
+        try {
+          // Decode the token here when it changes or on initial load
+          const decodedUser: User = jwtDecode(token);
+          setUser(decodedUser); // Store the decoded user info
+          localStorage.setItem('authToken', token); // Keep token in storage
+          console.log("Decoded User Info:", decodedUser); // For debugging
+        } catch (error) {
+          console.error("Failed to decode token:", error);
+          // Handle invalid token - clear state
+          setToken(null);
+          setUser(null);
+          localStorage.removeItem('authToken');
+        }
       } else {
-        localStorage.removeItem('authToken');
+        // Clear user info if token is removed
         setUser(null);
+        localStorage.removeItem('authToken');
       }
-    }, [token]);
+    }, [token]); // This effect runs when the token state changes
   
     const login = (credentialResponse: CredentialResponse) => {
       if (credentialResponse.credential) {
-        console.log("Google Sign-In Success. ID Token:", credentialResponse.credential);
+        console.log("AuthContext: Setting token from CredentialResponse.");
+        // Setting the token state will trigger the useEffect above to decode and set the user
         setToken(credentialResponse.credential);
       } else {
-        console.error("Login failed: No credential received.");
-        // Handle cases where the credential might be missing
+         console.error("Login failed: Credential missing from response.");
       }
     };
   

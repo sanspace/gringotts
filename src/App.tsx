@@ -4,6 +4,7 @@ import { Routes, Route, Link, Navigate } from 'react-router-dom'; // Import Navi
 import LoginPage from './pages/LoginPage'; // Ensure paths are correct
 import DashboardPage from './pages/DashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProfilePage from './pages/ProfilePage';
 import { useAuth } from './context/AuthContext';
 
 // MUI Components
@@ -12,9 +13,10 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 
 const App: React.FC = () => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, user } = useAuth();
 
   return (
     <>
@@ -31,6 +33,33 @@ const App: React.FC = () => {
             <>
               <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
               <Button color="inherit" onClick={logout}>Logout</Button>
+              {/* --- Wrap User Info Box with Link --- */}
+              <Link
+                  to="/profile"
+                  style={{ textDecoration: 'none', color: 'inherit' }} // Basic styling for the link
+              >
+                  <Box
+                      sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          ml: 2,
+                          cursor: 'pointer', // Add pointer cursor for better UX
+                          '&:hover': { // Optional: subtle hover effect
+                              opacity: 0.9,
+                          }
+                      }}
+                  >
+                      <Typography variant="body1" color="inherit" sx={{ mr: 1.5 }}>
+                          {user?.name || 'User'}
+                      </Typography>
+                      <Avatar
+                          alt={user?.name || 'User Avatar'}
+                          src={user?.picture}
+                          sx={{ width: 36, height: 36 }}
+                      />
+                  </Box>
+              </Link>
+              {/* --- End Link --- */}
             </>
           ) : (
             <>
@@ -59,6 +88,7 @@ const App: React.FC = () => {
           {/* Protected Routes Wrapper */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             {/* Add more protected routes here */}
           </Route>
 
