@@ -74,6 +74,8 @@ const App: React.FC = () => {
     </Box>
   );
 
+  const titleLinkPath = isLoggedIn ? '/dashboard' : '/login';
+
   return (
     // Simplified Root Box: Still use Flex Column for sticky footer
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -96,7 +98,19 @@ const App: React.FC = () => {
           )}
 
           {/* App Title */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component={Link} // Render this Typography as a Link component
+            to={titleLinkPath} // Set the destination dynamically
+            sx={{
+              flexGrow: 1, // Keep this so it pushes other items right
+              color: 'inherit', // Inherit color from AppBar
+              textDecoration: 'none', // Remove hyperlink underline
+              '&:hover': { // Optional: Add a subtle effect on hover
+                opacity: 0.9,
+              }
+            }}
+          >
             Gringotts
           </Typography>
 

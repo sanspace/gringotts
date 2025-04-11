@@ -1,0 +1,54 @@
+name: Deploy React App to GitHub Pages
+
+on:
+  push:
+    branches: ["develop"] # Or your deployment branch
+  workflow_dispatch: # Allows manual trigger
+
+# Set permissions for deployment actions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: # Optional: Define deployment environment for gh-pages
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18 # Specify your Node.js version
+          cache: 'npm' # Or 'yarn'
+
+      - name: Install dependencies
+        run: npm install # Or yarn install
+
+      - name: Build application # <-- This is the crucial step
+        # Add the 'env' block here to expose the secret
+        env:
+          # The key here is the environment variable name Vite expects
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+        # Run the build command
+        run: npm run build # Or yarn build (Vite will read the env var)
+
+      # Steps for GitHub Pages Deployment (using standard actions)
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Path to the directory Vite builds to (usually 'dist')
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
