@@ -84,8 +84,10 @@ const App: React.FC = () => {
       >
         <Typography 
           variant="body2" 
-          color= { (theme) => theme.palette.primary.contrastText }
           align="center"
+          sx={{
+            color: (theme) => theme.palette.primary.contrastText,
+         }}
         >
           {'© '}
           {new Date().getFullYear()}
