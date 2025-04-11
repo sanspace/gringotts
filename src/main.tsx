@@ -13,12 +13,10 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 // Vite automatically types import.meta.env
-let googleClientId: string | undefined = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const googleClientId: string | undefined = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 if (!googleClientId) {
-  googleClientId = atob("MTA4MDk2MTg4NTk3NC1ucXJya2Rzb2xoYmtmcmZtOHB1aTVqdTU5ZzdlZmVrNw")
-  googleClientId += ".apps.googleusercontent.com"
-  // console.error("Error: Missing Google Client ID. Set VITE_GOOGLE_CLIENT_ID in .env");
+  console.error("Error: Missing Google Client ID. Set VITE_GOOGLE_CLIENT_ID in .env");
 }
 
 // Optional: Define a basic MUI theme
