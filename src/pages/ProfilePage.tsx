@@ -1,6 +1,7 @@
 // src/pages/ProfilePage.tsx
 import React from 'react';
 import { useAuth } from '../context/AuthContext'; // To get user info
+import { Link } from 'react-router-dom'; // <<< Ensure Link is imported
 
 // MUI Components
 import Container from '@mui/material/Container';
@@ -8,9 +9,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
-import Grid from '@mui/material/Grid'; // Optional grid layout
-import EmailIcon from '@mui/icons-material/Email'; // Import the Email icon
-
+import Grid from '@mui/material/Grid';
+import Button from '@mui/material/Button'; // <<< ADDED Import Button
+import EmailIcon from '@mui/icons-material/Email';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // <<< ADDED Import Icon
 
 
 const ProfilePage: React.FC = () => {
@@ -30,12 +32,28 @@ const ProfilePage: React.FC = () => {
   return (
     <Container maxWidth="sm"> {/* Adjust maxWidth as needed */}
       <Box sx={{ my: 4 }}> {/* my: margin top/bottom */}
+
+        {/* --- START: Inserted Back Button --- */}
+        <Box sx={{ mb: 2, display: 'flex' }}> {/* mb for spacing below button */}
+            <Button
+                component={Link} // Use React Router Link
+                to="/dashboard"  // Link destination
+                variant="outlined" // Style as outlined
+                size="small"
+                startIcon={<ArrowBackIcon />} // Add back arrow icon
+            >
+                Back to Dashboard
+            </Button>
+        </Box>
+        {/* --- END: Inserted Back Button --- */}
+
         <Paper elevation={3} sx={{ p: 4 }}> {/* p: padding */}
           <Grid container spacing={3} direction="column" alignItems="center">
             {/* Profile Title */}
             <Grid size={12}> {/* Use size={12} for full width */}
               <Typography variant="h4" component="h1" align="center" gutterBottom>
-              {user.given_name || user.name}'s Profile
+                 {/* Title - kept simple or use user.name */}
+                 {user.given_name || user.name}'s Profile
               </Typography>
             </Grid>
 
@@ -51,31 +69,25 @@ const ProfilePage: React.FC = () => {
             {/* User Details Section */}
             <Grid size={12} sx={{ textAlign: 'center' }}> {/* Use size={12} */}
               <Box sx={{ mb: 2 }}>
+                {/* Name */}
                 <Typography variant="h6" component="div" gutterBottom>
                   {user.name || 'N/A'}
                 </Typography>
-              {/* Use a Box with Flexbox to align Icon and Text */}
-              <Box
-                sx={{
-                  display: 'flex',          // Enable Flexbox
-                  alignItems: 'center',     // Vertically align items in the middle
-                  justifyContent: 'center', // Horizontally center the icon+text group
-                  color: 'text.secondary',  // Apply secondary color to both icon and text
-                  mt: 0.5,                  // Optional margin-top for spacing from name
-                }}
-              >
-                {/* Email Icon */}
-                <EmailIcon
-                  fontSize="small" // Adjust size: 'inherit', 'small', 'medium', 'large'
-                  sx={{ mr: 0.75 }} // Add margin to the right of the icon (adjust value as needed)
-                />
-
-                {/* Email Text */}
-                <Typography variant="body1" component="span"> {/* Use component="span" for inline flow */}
-                  {user.email || 'N/A'}
-                </Typography>
-              </Box>
-
+                {/* Email with Icon */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'text.secondary',
+                    mt: 0.5,
+                  }}
+                >
+                  <EmailIcon fontSize="small" sx={{ mr: 0.75 }} />
+                  <Typography variant="body1" component="span">
+                    {user.email || 'N/A'}
+                  </Typography>
+                </Box>
               </Box>
             </Grid>
 

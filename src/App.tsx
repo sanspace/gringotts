@@ -1,131 +1,176 @@
 // src/App.tsx
-import React from 'react';
-import { Routes, Route, Link, Navigate } from 'react-router-dom'; // Import Navigate
-import LoginPage from './pages/LoginPage'; // Ensure paths are correct
+import React from 'react'; // Import useState
+import { Routes, Route, Link, Navigate, useLocation, NavLink } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import ProtectedRoute from './components/ProtectedRoute';
 import ProfilePage from './pages/ProfilePage';
+import AccountPage from './pages/AccountPage';
+import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './context/AuthContext';
 
 // MUI Components
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import CssBaseline from '@mui/material/CssBaseline';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton'; // Import IconButton
+
+// Icons
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu'; // Import MenuIcon
+import SettingsIcon from '@mui/icons-material/Settings';
+
+const drawerWidth = 240;
 
 const App: React.FC = () => {
   const { isLoggedIn, logout, user } = useAuth();
+  const location = useLocation();
+
+  // State for controlling the temporary drawer's visibility
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  // Handler to toggle the drawer state
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const navItems = [
+    { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
+    { text: 'Profile', path: '/profile', icon: <AccountCircleIcon /> },
+    { text: 'Account', path: '/account', icon: <SettingsIcon /> }, 
+  ];
+
+  // Define Drawer content separately for clarity
+  const drawerContent = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}> {/* Close drawer if clicking inside Box but outside Button */}
+      <Toolbar /> {/* Optional: Spacer to clear AppBar height, less critical for temporary */}
+      <Divider />
+      <List>
+        {navItems.map((item) => (
+          <ListItem key={item.text} disablePadding>
+            <ListItemButton
+              component={NavLink}
+              to={item.path}
+              // onClick={handleDrawerToggle} // Already handled by Box onClick or NavLink navigation
+              sx={{ textAlign: 'left', '&.active': { backgroundColor: 'action.selected' } }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
 
   return (
-    <>
+    // Simplified Root Box: Still use Flex Column for sticky footer
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <CssBaseline />
 
-    
-      {/* Basic App Bar */}
-      <AppBar position="static">
+      {/* AppBar: Back to simpler state, add MenuButton */}
+      <AppBar component="nav" position="sticky"> {/* Use component="nav" for semantics */}
         <Toolbar>
+          {/* Menu Button - Shows only when logged in */}
+          {isLoggedIn && (
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2 }} // Can add display logic for breakpoints if needed later: sx={{ mr: 2, display: { sm: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+
+          {/* App Title */}
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Gringotts
           </Typography>
-          {isLoggedIn ? (
-            <>
-              <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
-              <Button color="inherit" onClick={logout}>Logout</Button>
-              {/* --- Wrap User Info Box with Link --- */}
-              <Link
-                  to="/profile"
-                  style={{ textDecoration: 'none', color: 'inherit' }} // Basic styling for the link
-              >
-                  <Box
-                      sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          ml: 2,
-                          cursor: 'pointer', // Add pointer cursor for better UX
-                          '&:hover': { // Optional: subtle hover effect
-                              opacity: 0.9,
-                          }
-                      }}
-                  >
-                      <Typography variant="body1" color="inherit" sx={{ mr: 1.5 }}>
-                          {user?.name || 'User'}
-                      </Typography>
-                      <Avatar
-                          alt={user?.name || 'User Avatar'}
-                          src={user?.picture}
-                          sx={{ width: 36, height: 36 }}
-                      />
-                  </Box>
-              </Link>
-              {/* --- End Link --- */}
-            </>
-          ) : (
-            <>
-              {/* Only show Login button if NOT on the /login page */}
-              {location.pathname !== '/login' && (
-                <Button
-                  color="inherit"
-                  component={Link}
-                  to="/login"
-                >
-                  Login
-                </Button>
-              )}
-              {/* If location.pathname IS '/login', this button won't render */}
-            </>
-          )}
+
+          {/* Right Side Items */}
+           {isLoggedIn ? (
+                 <>
+                    <Button color="inherit" onClick={logout}>Logout</Button>
+                    <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', ml: 2, cursor: 'pointer', '&:hover': { opacity: 0.9 } }}>
+                            <Typography variant="body1" color="inherit" sx={{ mr: 1.5 }}>{user?.name || 'User'}</Typography>
+                            <Avatar alt={user?.name || 'User Avatar'} src={user?.picture} sx={{ width: 36, height: 36 }} />
+                        </Box>
+                    </Link>
+                 </>
+            ) : (
+                 <> {location.pathname !== '/login' && (<Button color="inherit" component={Link} to="/login">Login</Button>)} </>
+            )}
         </Toolbar>
       </AppBar>
 
-      {/* Main Content */}
-      <Box component="main" sx={{ p: 3, flexGrow: 1 }}>
-        <Routes>
-          {/* Public Route */}
-          <Route path="/login" element={<LoginPage />} />
+      {/* Temporary Drawer Component - Rendered conditionally but outside main layout flow */}
+       {isLoggedIn && (
+          <Drawer
+            anchor="left"
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle} // Closes when clicking backdrop
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+            //   display: { xs: 'block', sm: 'none' }, // Example: Only use temporary on mobile - adapt if needed
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+          >
+            {drawerContent}
+          </Drawer>
+       )}
 
-          {/* Protected Routes Wrapper */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            {/* Add more protected routes here */}
-          </Route>
 
-          {/* Redirect root based on login status */}
-          <Route
-            path="/"
-            element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />}
-          />
-
-          {/* 404 Not Found */}
-          <Route path="*" element={<Typography variant="h4">404 Not Found</Typography>} />
-        </Routes>
-      </Box>
-
+      {/* Main Area Wrapper (No layout changes needed here for temporary drawer) */}
       <Box
-        component="footer"
         sx={{
-          py: 2, // Padding top and bottom (py = padding y-axis)
-          px: 2, // Padding left and right
-          mt: 'auto', // Push footer down if content is short
-          backgroundColor: (theme) => theme.palette.primary.main,
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'auto',
+          bgcolor: 'background.default',
         }}
       >
-        <Typography 
-          variant="body2" 
-          align="center"
-          sx={{
-            color: (theme) => theme.palette.primary.contrastText,
-         }}
-        >
-          {'© '}
-          {new Date().getFullYear()}
-          {' Gringotts Banking Corp. All Rights Reserved.'}
-        </Typography>
+        {/* Main Content */}
+        <Box component="main" sx={{ p: 3, flexGrow: 1 }}>
+          <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/account" element={<AccountPage />} />
+              </Route>
+              <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />} />
+              <Route path="*" element={<Typography variant="h4">404 Not Found</Typography>} />
+          </Routes>
+        </Box>
+
+        {/* Footer */}
+        <Box component="footer" sx={{ py: 2, px: 2, backgroundColor: (theme) => theme.palette.primary.main }}>
+          <Typography variant="body2" sx={{ color: (theme) => theme.palette.primary.contrastText }} align="center">
+            {'© '} {new Date().getFullYear()} {' Gringotts Banking Corp. All Rights Reserved.'}
+          </Typography>
+        </Box>
       </Box>
-      </Box>
-    </>
+      {/* End Main Area Wrapper */}
+
+    </Box> // End Outermost Box
   );
 }
 
