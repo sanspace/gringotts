@@ -52,14 +52,14 @@ const ProfilePage: React.FC = () => {
             <Grid size={12}> {/* Use size={12} for full width */}
               <Typography variant="h4" component="h1" align="center" gutterBottom>
                  {/* Title - kept simple or use user.name */}
-                 {user.given_name || user.name}'s Profile
+                 {user.given_name || user.full_name}'s Profile
               </Typography>
             </Grid>
 
             {/* Avatar */}
             <Grid size={12}> {/* Use size={12} */}
               <Avatar
-                alt={user.name || 'User Avatar'}
+                alt={user.full_name || 'User Avatar'}
                 src={user.picture}
                 sx={{ width: 100, height: 100, mb: 2, mx: 'auto' }}
               />
@@ -70,7 +70,7 @@ const ProfilePage: React.FC = () => {
               <Box sx={{ mb: 2 }}>
                 {/* Name */}
                 <Typography variant="h6" component="div" gutterBottom>
-                  {user.name || 'N/A'}
+                  {user.full_name || 'N/A'}
                 </Typography>
                 {/* Email with Icon */}
                 <Box

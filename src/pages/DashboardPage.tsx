@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext'; // To get user info
 import { Link } from 'react-router-dom'; // Import Link for navigation
 
@@ -19,7 +19,6 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
-  const [backendMessage, setBackendMessage] = useState<string>('Loading message from backend...');
 
   useEffect(() => {
     const backendUrl = 'http://127.0.0.1:8000/'; // Your LOCAL backend URL
@@ -44,12 +43,10 @@ const DashboardPage: React.FC = () => {
       })
       .then(data => {
         console.log("Data received from backend:", data);
-        setBackendMessage(data.message || "Received data, but no 'message' field.");
       })
       .catch(error => {
         // Log fetch errors (like network errors, CORS errors)
         console.error("Error fetching data from backend:", error);
-        setBackendMessage(`Error: Could not connect or fetch from backend. ${error.message}`);
       });
 
   }, []);
@@ -60,7 +57,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Personalized Welcome Message */}
         <Typography variant="h4" component="h1" gutterBottom>
-          Hi, {user?.name || 'User'}!
+          Hi, {user?.given_name || 'User'}!
         </Typography>
         <Typography variant="body1" sx={{ mb: 4 }}> {/* mb: margin-bottom */}
           Welcome back to your Gringotts dashboard overview.
@@ -132,7 +129,7 @@ const DashboardPage: React.FC = () => {
 
 
         {/* Toned down message */}
-        <Typography
+        {/* <Typography
           variant="body2"
           color="text.secondary"
           sx={{
@@ -141,7 +138,7 @@ const DashboardPage: React.FC = () => {
           }}
         >
           More dashboard elements coming soon...
-        </Typography>
+        </Typography> */}
 
       </Box>
     </Container>

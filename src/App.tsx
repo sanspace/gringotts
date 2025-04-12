@@ -118,11 +118,12 @@ const App: React.FC = () => {
           {/* Right Side Items */}
            {isLoggedIn ? (
                  <>
+                    {console.log(user)}
                     <Button color="inherit" onClick={logout} startIcon={<LogoutIcon />}>Logout</Button>
                     <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', ml: 2, cursor: 'pointer', '&:hover': { opacity: 0.9 } }}>
-                            <Typography variant="body1" color="inherit" sx={{ mr: 1.5 }}>{user?.name || 'User'}</Typography>
-                            <Avatar alt={user?.name || 'User Avatar'} src={user?.picture} sx={{ width: 36, height: 36 }} />
+                            <Typography variant="body1" color="inherit" sx={{ mr: 1.5 }}>{user?.full_name || 'User'}</Typography>
+                            <Avatar alt={user?.full_name || 'User Avatar'} src={user?.picture} sx={{ width: 36, height: 36 }} />
                         </Box>
                     </Link>
                  </>
