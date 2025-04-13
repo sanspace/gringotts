@@ -36,6 +36,7 @@ jobs:
         env:
           # The key here is the environment variable name Vite expects
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_BACKEND_URL: ${{ vars.VITE_BACKEND_URL }}
         # Run the build command
         run: npm run build # Or yarn build (Vite will read the env var)
 
