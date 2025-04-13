@@ -41,6 +41,12 @@ interface BackendUser {
     children: ReactNode; // Type the children prop
   }
 
+  const backendUrl: string | undefined = import.meta.env.VITE_BACKEND_URL;
+  if (!backendUrl) {
+    console.error("Error: Missing VITE_BACKEND_URL in .env");
+  }
+  console.log("Backend URL:", backendUrl);
+  
   const getInitialAuthState = (): { token: string | null; user: BackendUser | null } => {
     try {
       const token = localStorage.getItem('backendAuthToken');
@@ -86,7 +92,7 @@ interface BackendUser {
 
     try {
       // --- Call your backend's endpoint ---
-      const response = await fetch('http://127.0.0.1:8000/auth/google', { // Use correct URL to your backend
+      const response = await fetch(`${backendUrl}/auth/google`, { // Use correct URL to your backend
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,9 +109,6 @@ interface BackendUser {
 
       // --- Process successful response from backend ---
       const backendResponse: { access_token: string; token_type: string; user: BackendUser } = await response.json();
-
-      console.log("User Details from the backend:");
-      console.log(backendResponse.user);
 
       if (backendResponse.access_token && backendResponse.user) {
         console.log("AuthContext: Received backend token and user info.");

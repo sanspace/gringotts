@@ -1,5 +1,5 @@
 // src/pages/DashboardPage.tsx
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '../context/AuthContext'; // To get user info
 import { Link } from 'react-router-dom'; // Import Link for navigation
 
@@ -19,37 +19,6 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
-
-  useEffect(() => {
-    const backendUrl = 'http://127.0.0.1:8000/'; // Your LOCAL backend URL
-
-    console.log(`Workspaceing from backend: ${backendUrl}`);
-
-    fetch(backendUrl)
-      .then(response => {
-        // Check if response is successful
-        if (!response.ok) {
-          // Log detailed error if possible
-          console.error(`HTTP error! Status: ${response.status}`, response);
-          throw new Error(`Backend responded with status: ${response.status}`);
-        }
-        // Check content type before parsing JSON
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-            return response.json();
-        } else {
-            throw new Error("Received non-JSON response from backend");
-        }
-      })
-      .then(data => {
-        console.log("Data received from backend:", data);
-      })
-      .catch(error => {
-        // Log fetch errors (like network errors, CORS errors)
-        console.error("Error fetching data from backend:", error);
-      });
-
-  }, []);
 
   return (
     <Container maxWidth="lg"> {/* Using lg for potentially wider dashboard */}
@@ -126,19 +95,6 @@ const DashboardPage: React.FC = () => {
 
         </Grid>
         {/* --- End Grid Container --- */}
-
-
-        {/* Toned down message */}
-        {/* <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            mt: 4,
-            fontStyle: 'italic'
-          }}
-        >
-          More dashboard elements coming soon...
-        </Typography> */}
 
       </Box>
     </Container>

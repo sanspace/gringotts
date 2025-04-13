@@ -249,14 +249,6 @@ const AccountPage: React.FC = () => {
         )}
         {/* End conditional rendering block */}
 
-    {/* --- ADDED: Coming Soon Message --- */}
-    {/* <Box sx={{ mt: 4, textAlign: 'center' }}>
-      <Typography variant="body2" color="text.secondary">
-        More account management features coming soon!
-      </Typography>
-    </Box> */}
-    {/* --- END: Coming Soon Message --- */}
-
       </Box> {/* End main content Box */}
     </Container>
   );
