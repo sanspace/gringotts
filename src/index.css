@@ -1,9 +1,10 @@
 /* src/index.css */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap'); /* Added Montserrat */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap"); /* Added Montserrat */
 
 :root {
   /* Update font-family to use the imported font */
-  font-family: 'Montserrat', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family:
+    "Montserrat", Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -18,8 +19,8 @@
 }
 
 body {
-   margin: 0;
-   /* background-color: #ffffff; */ /* Let MUI Theme handle background */
+  margin: 0;
+  /* background-color: #ffffff; */ /* Let MUI Theme handle background */
 }
 
 /* Remove other default layout/color styles from Vite's template */

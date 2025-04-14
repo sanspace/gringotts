@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18 # Specify your Node.js version
-          cache: 'npm' # Or 'yarn'
+          cache: "npm" # Or 'yarn'
 
       - name: Install dependencies
         run: npm install # Or yarn install
@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Path to the directory Vite builds to (usually 'dist')
-          path: './dist'
+          path: "./dist"
 
       - name: Deploy to GitHub Pages
         id: deployment
